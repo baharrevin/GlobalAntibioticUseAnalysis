@@ -1,0 +1,249 @@
+---
+title: "Assignment"
+author: "Bahar Evin"
+date: "2026-01-07"
+output: html_document
+---
+
+Dataset Website: *https://www.who.int/data/gho/data/indicators/indicator-details/GHO/antibacterial-consumption--total-consumption-of-antibacterials-expressed-as-ddd-per-1000-inhabitants-per-day*
+
+## 1 - Data Manipulating 
+
+*(cleaning, fixing, rename)*
+
+```{r}
+# install.packages
+library(tidyverse)
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+
+# reading, saving, reading, check
+data_antibiotic <- read_csv("data_antibiotic.csv")
+saveRDS(data_antibiotic, "data_antibiotic.rds")
+data_antibiotic <- readRDS("data_antibiotic.rds")
+head(data_antibiotic)
+anyNA(data_antibiotic)
+colSums(is.na(data_antibiotic))
+
+# Deleting columns (missing values, unwanted columns)
+data_antibiotic_clean <- data_antibiotic %>%
+  select(where(~ !all(is.na(.))))
+data_antibiotic_clean <- data_antibiotic_clean %>%
+  select(-IndicatorCode, -ParentLocationCode, -SpatialDimValueCode, -FactComments)
+names(data_antibiotic_clean)
+
+# Column rename, Fixing data type, Fixing rows
+data_antibiotic_clean <- data_antibiotic_clean %>%
+  rename(
+    IsValueTypeNumeric = ValueType,
+    IsIndicator        = Indicator
+  )
+
+data_antibiotic_clean <- data_antibiotic_clean %>%
+  mutate(
+    IsIndicator =
+      IsIndicator ==
+      "Total use of antibacterials expressed as DDD per 1000 inhabitants per day"
+  )
+
+data_antibiotic_clean$DateModified <- as.Date(data_antibiotic_clean$DateModified)
+
+data_antibiotic_clean <- data_antibiotic_clean %>%
+  mutate(
+    IsValueTypeNumeric = 
+      if_else(IsValueTypeNumeric == "numeric", TRUE, FALSE)
+  )
+
+data_antibiotic_clean %>%
+  filter(grepl("Global", ParentLocation)) %>%
+  select(ParentLocation, Location)
+data_antibiotic_clean <- data_antibiotic_clean %>%
+  mutate(
+    ParentLocation = if_else(
+      grepl("Global", ParentLocation) &
+        Location == "China, Hong Kong Special Administrative Region",
+      "South-East Asia",
+      ParentLocation
+    )
+  )
+
+# Check and saving 
+head(data_antibiotic_clean)
+sum(grepl("Global", data_antibiotic_clean$ParentLocation), na.rm = TRUE)
+
+saveRDS(data_antibiotic_clean, "data_antibiotic_clean.rds")
+```
+
+
+## 2 - Data Analysis 
+
+*(Descriptive results, Statistical analysis)*
+
+```{r}
+data_antibiotic_clean <- readRDS("data_antibiotic_clean.rds")
+data_antibiotic_analysis <- data_antibiotic_clean %>%
+  select( ParentLocation, Location, Period, FactValueNumeric )
+
+names(data_antibiotic_analysis)
+saveRDS(data_antibiotic_analysis, "data_antibiotic_analysis.rds")
+
+# a. Annual global antibiotic consumption between 2016 and 2023
+annual_global_consumption <- data_antibiotic_analysis %>%
+  filter(
+    Period >= 2016,
+    Period <= 2023
+  ) %>%
+  group_by(Period) %>%
+  summarise(
+    mean_consumption = mean(FactValueNumeric, na.rm = TRUE)
+  )
+annual_global_consumption
+
+annual_consumption_summarise <- annual_global_consumption %>%
+  summarise(
+    min_year = Period[which.min(mean_consumption)],
+    min_value = min(mean_consumption),
+    max_year = Period[which.max(mean_consumption)],
+    max_value = max(mean_consumption)
+  )
+annual_consumption_summarise
+
+# b. Average antibiotic consumption across regions over the years 2016-2023 (8-year period)
+regional_avgerage <- data_antibiotic_analysis %>%
+  filter(
+    Period >= 2016,
+    Period <= 2023
+  ) %>%
+  group_by(ParentLocation) %>%
+  summarise(
+    avg_antibiotic_use_2016_2023 = mean(FactValueNumeric, na.rm = TRUE)
+  )
+regional_avgerage
+```
+
+```{r}
+# Linear regression test
+linear_reg <- lm(mean_consumption ~ Period, data = annual_global_consumption)
+summary(linear_reg)
+
+# correlation test
+correlation_test <- cor.test(annual_global_consumption$Period,
+         annual_global_consumption$mean_consumption,
+         method = "spearman")
+print(correlation_test)
+
+# Statistical test
+max_region <- regional_avgerage[which.max(regional_avgerage$avg_antibiotic_use_2016_2023), ]
+min_region <- regional_avgerage[which.min(regional_avgerage$avg_antibiotic_use_2016_2023), ]
+
+cat("The region with the highest consumption:", max_region$ParentLocation, " (MEAN:", max_region$avg_antibiotic_use_2016_2023, ")\n")
+
+cat("The region with the lowest consumption:", min_region$ParentLocation, " (MEAN:", min_region$avg_antibiotic_use_2016_2023, ")\n")
+
+
+# Analysis of the Country with the Highest Consumption
+max_country_name <- data_antibiotic_analysis %>%
+  filter(Period >= 2016 & Period <= 2023) %>%
+  group_by(Location) %>%
+  summarise(max_country_avg = mean(FactValueNumeric, na.rm = TRUE)) %>%
+  arrange(desc(max_country_avg)) %>%
+  slice(1) %>%
+  pull(Location)
+
+max_country_analysis <- data_antibiotic_analysis %>%
+  filter(Period >= 2016, Period <= 2023) %>%
+  group_by(Location, ParentLocation) %>%
+  summarise(
+    eight_year_avg = mean(FactValueNumeric, na.rm = TRUE),
+    .groups = 'drop'
+  )
+max_country <- max_country_analysis %>%
+  slice_max(eight_year_avg, n = 1)
+
+print(paste("The country with the highest consumption:", max_country_name))
+print(max_country)
+
+```
+
+
+## 3) Visualizations
+
+```{r}
+# Increase/decrease in global average antibiotic consumption over the years (2016 and 2023) : SCATTER PLOT 
+ggplot(annual_global_consumption, aes(Period, mean_consumption)) + 
+  geom_point(aes(color = "red"),
+             alpha = 0.7,
+             position = position_jitter(width = 0.05)) +  
+geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Global Average Antibiotic Consumption (2016–2023)", 
+       x = "Period - Year", y = "Mean Antibiotic Consumption (Global)", 
+       caption = "Global average antibiotic consumption by year between 2016 and 2023, with a linear trend line showing temporal changes.") +
+  theme_bw()
+
+# Differences in antibiotic consumption by region between 2016 and 2023 : BOX PLOT
+ggplot(
+  data_antibiotic_analysis %>% 
+    filter(Period >= 2016 & Period <= 2023),
+  aes(x = ParentLocation, y = FactValueNumeric)) +
+  
+  geom_boxplot(outlier.color = "red", alpha = 0.7) +
+  coord_flip() +
+  labs(
+    title = "Distribution of Antibiotic Consumption Across Regions (2016–2023)",
+    x = "Region",
+    y = "Antibiotic Consumption",
+    caption = "Regional distribution of antibiotic consumption across countries during the 2016–2023 period.") +
+  theme_bw()
+
+# Differences in antibiotic consumption by country between 2016 and 2023 (for first 10 country) : HORIZONTAL BAR CHART
+# (mean calculation for each country and determine top 10)
+country_avg <- data_antibiotic_analysis %>%
+  filter(Period >= 2016 & Period <= 2023) %>%
+  group_by(Location) %>%
+  summarise(
+    avg_antibiotic_consumption = mean(FactValueNumeric, na.rm = TRUE),
+    .groups = "drop"
+  )
+first_ten_country <- country_avg %>%
+  arrange(desc(avg_antibiotic_consumption)) %>%
+  slice(1:10) 
+
+ggplot(first_ten_country,
+       aes(x = reorder(Location, avg_antibiotic_consumption),
+           y = avg_antibiotic_consumption,
+           fill = Location == first_ten_country$Location)) +
+  geom_col() +
+  coord_flip() +
+  scale_fill_manual(values = c("grey70", "red"), guide = "none") +
+  labs(
+    title = "Top 10 Countries by Average Antibiotic Consumption (2016–2023)",
+    x = "Country (Top 10)",
+    y = "Average Antibiotic Consumption (2016–2023)",
+    caption = "Top 10 countries with the highest average antibiotic consumption from 2016 to 2023."
+  ) +
+  theme_minimal()
+
+# Results Table
+kable(
+  summary(linear_reg)$coefficients,
+  digits = 3,
+  caption = "Linear regression model output summarizing the relationship between year and global average antibiotic consumption (2016–2023)."
+)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

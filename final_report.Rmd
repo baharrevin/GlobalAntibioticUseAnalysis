@@ -1,0 +1,60 @@
+---
+title: "Final Report"
+author: "Bahar Evin"
+date: "2026-01-02"
+output: html_document
+---
+
+## Introduction
+
+This study examines global antibiotic consumption trends between 2016 and 2023 using statistical analysis and data visualization in R. The analysis focuses on identifying temporal changes in average antibiotic use, as well as differences across regions and countries. Understanding these patterns matters because it allows for the comparison of antibiotic consumption over time and across geographic areas, providing evidence-based insights that can support monitoring efforts and inform future research and policy evaluations.
+
+## Methods
+
+**Data source**
+
+Data were obtained from the World Health Organization (WHO) Global Health Observatory (GHO). The dataset includes country-level antibiotic consumption values measured as Defined Daily Doses (DDD) per 1000 inhabitants per day.
+
+database title :  “Antibiotic use: Total use of antibiotics expressed as DDD per 1000 inhabitants per day”.
+
+Dataset Website : *https://www.who.int/data/gho/data/indicators/indicator-details/GHO/antibacterial-consumption--total-consumption-of-antibacterials-expressed-as-ddd-per-1000-inhabitants-per-day*
+
+
+**Data preparation**
+
+The dataset was cleaned by removing irrelevant information and handling missing columns. Data were restricted to the period between 2016 and 2023 to ensure consistency across analyses.
+
+**Analysis approach**
+
+Global annual mean antibiotic consumption values were calculated for the 2016–2023 period. Temporal trends were assessed using linear regression to evaluate whether antibiotic consumption increased or decreased over time. A Spearman correlation test was additionally applied to examine the direction and strength of the relationship between year and global average antibiotic consumption.
+
+To assess regional differences, average antibiotic consumption values over the 2016–2023 period were calculated for each region based on country-level data. Country-level averages were also computed to identify countries with the highest antibiotic consumption during the study period.
+
+## Results
+
+**Global trends in antibiotic consumption (2016–2023)**
+
+Analysis of annual global mean antibiotic consumption between 2016 and 2023 showed no statistically significant temporal trend. Linear regression indicated a slight year-to-year decrease in global antibiotic use (estimate = −0.17); however, this change was not statistically significant (p > 0.05). Consistent with this finding, Spearman correlation analysis revealed a weak and non-significant association between year and global average antibiotic consumption (ρ ≈ −0.14, p > 0.05). These results suggest that global antibiotic consumption remained relatively stable over the study period (Figure 1; Table 1).
+
+**Regional differences in antibiotic consumption**
+
+Substantial differences in antibiotic consumption were observed across world regions when data from 2016 to 2023 were aggregated. Regional distributions showed clear variability in consumption levels, with some regions exhibiting consistently higher average use than others. Boxplot visualizations highlighted both regional variability and the presence of outlier countries with particularly high or low consumption values (Figure 2).
+
+**Country-level antibiotic consumption**
+
+Country-level analysis identified marked differences in average antibiotic consumption over the 2016–2023 period. The top 10 countries with the highest average consumption were identified, with one country showing the highest overall mean value across the study period. These differences were illustrated using a horizontal bar chart, emphasizing disparities in antibiotic use at the country level (Figure 3).
+
+## Discussion 
+
+The results show that global antibiotic consumption remained largely stable between 2016 and 2023, with no statistically significant trend over time. Although a slight decrease was observed, this change was not statistically meaningful. In contrast, substantial differences were found across regions and countries, and the analysis identified one country with the highest average antibiotic consumption during this period.
+
+These findings suggest that global averages may mask important regional and country-level differences in antibiotic consumption. However, this study is limited by reliance on secondary data, potential reporting inconsistencies across countries, and the lack of a consistent pattern of increase or decrease over time, which prevents drawing clear conclusions about directional trends in antibiotic use.
+
+## References
+
+Dataset Website : *https://www.who.int/data/gho/data/indicators/indicator-details/GHO/antibacterial-consumption--total-consumption-of-antibacterials-expressed-as-ddd-per-1000-inhabitants-per-day*
+
+
+```{r}
+sessionInfo()
+```
