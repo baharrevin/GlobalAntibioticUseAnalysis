@@ -25,3 +25,5 @@ Bu proje, 2016–2023 yılları arasında ülkelerin antibiyotik kullanım veril
 *Format: CSV dosyası*
 
 *Bu proje R dilinde yazılmıştır.*
+
+*Projenin açılması için data adlı bir klasör oluşturun ve csv dosyasını bu klasöre kaydedin.*
