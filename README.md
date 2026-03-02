@@ -18,10 +18,10 @@ Bu proje, 2016–2023 yılları arasında ülkelerin antibiyotik kullanım veril
 
 ---
 
-*Kullanılan veriseti: Dünya Sağlık Örgütü (WHO)
+*Kullanılan veriseti: Dünya Sağlık Örgütü (WHO)*
   
   https://www.who.int/data/gho/data/indicators/indicator-details/GHO/antibacterial-consumption--total-consumption-of-antibacterials-expressed-as-ddd-per-1000-inhabitants-per-day
 
-Format: CSV dosyası
+*Format: CSV dosyası*
 
-Bu proje R dilinde yazılmıştır.*
+*Bu proje R dilinde yazılmıştır.*
