@@ -1,29 +1,36 @@
-# Global Antibiotic Use Analysis - Ocak 2026 
+# Global Antibiotic Use Analysis - January 2026 
 
-Bu proje, 2016–2023 yılları arasında ülkelerin antibiyotik kullanım verilerini analiz etmeyi amaçlamaktadır. Çalışmada küresel, bölgesel ve ülke bazlı antibiyotik tüketim eğilimleri incelenmiştir.
+This project aims to analyze **antibiotic consumption data of countries between 2016 and 2023**. The study examines global, regional, and country-level trends in antibiotic consumption.
 
-## Projede yer alan analiz ve araştırma soruları
+## Analysis and Research Questions in the Project
 
-**1.** Veri setinde yer alan tüm ülkeler için 2016–2023 yılları arasındaki yıllık küresel ortalama antibiyotik kullanımı, yıllık artış veya azalış eğilimleri analizi, görselleştirme 
+**1.** Analysis and visualization of the **annual global average antibiotic consumption** for all countries in the dataset between 2016–2023, including yearly increasing or decreasing trends.
 
-**Kullanılan yöntem:** Trend analizi için lineer regresyon (linear_reg) ve Spearman korelasyon testi yapıldı.
+**Method used:**
+Trend analysis was conducted using **Linear Regression (linear_reg)** and the **Spearman Correlation Test**.
 
-**2.** Veri setindeki tüm ülkeler bölgelere göre gruplandırılır. Her bölge için 2016–2023 yılları arasındaki yıllık ortalama antibiyotik kullanımı, genel ortalama, maksimum ve minimum değerler analizi, kullanım eğilimleri, görselleştirme
+**2.** All countries in the dataset are grouped by **regions**. For each region, the following were analyzed and visualized for the years 2016–2023:
 
-**Kullanılan yöntem:** Genel ortalama, maksimum ve minimum hesaplama
+* Annual average antibiotic consumption, Overall average consumption, Maximum and minimum values, Consumption trends
 
-**3.** Her ülke için 2016–2023 yılları arasındaki ortalama antibiyotik kullanımı hesaplanması, en yüksek ve en düşük antibiyotik tüketimine sahip ülkeler belirlenmesi, incelenmesi
+**Method used:**
+Calculation of **overall average, maximum, and minimum values**.
 
-**Kullanılan yöntem:** 2016–2023 yılları arasında ülke bazlı ortalama antibiyotik kullanımını belirlemek.
+**3.** Calculation of the **average antibiotic consumption for each country between 2016–2023**, and identification and examination of the countries with the **highest and lowest antibiotic consumption**.
+
+**Method used:**
+Determining the **country-level average antibiotic consumption between 2016–2023**.
 
 ---
 
-*Kullanılan veriseti: Dünya Sağlık Örgütü (WHO)*
-  
-  https://www.who.int/data/gho/data/indicators/indicator-details/GHO/antibacterial-consumption--total-consumption-of-antibacterials-expressed-as-ddd-per-1000-inhabitants-per-day
+**Dataset used:**
+World Health Organization (WHO)
 
-*Format: CSV dosyası*
+[https://www.who.int/data/gho/data/indicators/indicator-details/GHO/antibacterial-consumption--total-consumption-of-antibacterials-expressed-as-ddd-per-1000-inhabitants-per-day](https://www.who.int/data/gho/data/indicators/indicator-details/GHO/antibacterial-consumption--total-consumption-of-antibacterials-expressed-as-ddd-per-1000-inhabitants-per-day)
 
-*Bu proje R dilinde yazılmıştır.*
+**Format:** CSV file
 
-*Projenin açılması için data adlı bir klasör oluşturun ve csv dosyasını bu klasöre kaydedin.*
+This project was written in the **R programming language**.
+
+To run the project, create a folder named **`data`** and save the **CSV file** inside this folder.
+
